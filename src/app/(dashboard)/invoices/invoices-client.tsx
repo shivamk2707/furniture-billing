@@ -12,19 +12,20 @@ import {
 import { deleteInvoice } from '@/actions/invoices'
 import type { InvoiceSummary } from '@/actions/invoices'
 import { formatDate } from '@/lib/invoice-types'
+import { Search, Plus, Eye, Download, Trash2, Filter, ReceiptText } from 'lucide-react'
 
 const col = createColumnHelper<InvoiceSummary>()
 
 const STATUS_BADGE: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
-  issued: 'bg-blue-100 text-blue-700',
-  void: 'bg-red-100 text-red-600',
+  draft: 'bg-slate-100 text-slate-600 border border-slate-200',
+  issued: 'bg-blue-50 text-blue-700 border border-blue-200',
+  void: 'bg-red-50 text-red-600 border border-red-200',
 }
 
 const PAYMENT_BADGE: Record<string, string> = {
-  unpaid: 'bg-orange-100 text-orange-700',
-  partially_paid: 'bg-yellow-100 text-yellow-700',
-  paid: 'bg-green-100 text-green-700',
+  unpaid: 'bg-orange-50 text-orange-700 border border-orange-200',
+  partially_paid: 'bg-amber-50 text-amber-700 border border-amber-200',
+  paid: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
 }
 
 function formatINR(n: number) {
@@ -69,7 +70,7 @@ export function InvoicesClient({
     col.accessor('invoice_number', {
       header: 'Invoice #',
       cell: (info) => (
-        <Link href={`/invoices/${info.row.original.id}`} className="text-blue-600 hover:underline font-medium">
+        <Link href={`/invoices/${info.row.original.id}`} className="text-blue-600 hover:text-blue-700 hover:underline font-semibold">
           {info.getValue() ?? '(Draft)'}
         </Link>
       ),
@@ -101,7 +102,7 @@ export function InvoicesClient({
     col.accessor('payment_status', {
       header: 'Payment',
       cell: (info) => (
-        <span className={`px-2 py-0.5 rounded text-xs font-medium ${PAYMENT_BADGE[info.getValue()] ?? ''}`}>
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${PAYMENT_BADGE[info.getValue()] ?? ''}`}>
           {info.getValue().replace('_', ' ')}
         </span>
       ),
@@ -109,7 +110,7 @@ export function InvoicesClient({
     col.accessor('status', {
       header: 'Status',
       cell: (info) => (
-        <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_BADGE[info.getValue()] ?? ''}`}>
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${STATUS_BADGE[info.getValue()] ?? ''}`}>
           {info.getValue()}
         </span>
       ),
@@ -118,26 +119,32 @@ export function InvoicesClient({
       id: 'actions',
       header: '',
       cell: ({ row }) => (
-        <div className="flex gap-3 justify-end items-center">
-          <Link href={`/invoices/${row.original.id}`} className="text-xs text-blue-600 hover:underline">
-            View
+        <div className="flex gap-2 justify-end items-center">
+          <Link 
+            href={`/invoices/${row.original.id}`} 
+            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            title="View Invoice"
+          >
+            <Eye className="w-4 h-4" />
           </Link>
           {row.original.status === 'issued' && (
             <a
               href={`/api/pdf/${row.original.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-green-600 hover:underline"
+              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+              title="Download PDF"
             >
-              PDF
+              <Download className="w-4 h-4" />
             </a>
           )}
           {role === 'admin' && (
             <button
               onClick={() => setInvoiceToDelete(row.original.id)}
-              className="text-xs text-red-600 hover:underline"
+              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+              title="Delete Invoice"
             >
-              Delete
+              <Trash2 className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -181,111 +188,131 @@ export function InvoicesClient({
   }
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Invoices</h1>
+    <div className="space-y-6 max-w-7xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Invoices</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage and track your customer invoices.</p>
+        </div>
         <Link
           href="/invoices/new"
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200"
         >
-          + New Invoice
+          <Plus className="w-4 h-4" />
+          Create Invoice
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <form
           onSubmit={(e) => { e.preventDefault(); applyFilters() }}
-          className="flex gap-2"
+          className="flex flex-1 gap-2 min-w-[280px]"
         >
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search invoice #, customer, phone…"
-            className="w-64 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button type="submit" className="px-3 py-2 bg-gray-100 border border-gray-300 text-sm rounded-md hover:bg-gray-200">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search invoice #, customer..."
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+          </div>
+          <button type="submit" className="px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors shadow-sm">
             Search
           </button>
         </form>
 
-        <select
-          value={status}
-          onChange={(e) => { setStatus(e.target.value); applyFilters({ status: e.target.value }) }}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none"
-        >
-          <option value="">All Status</option>
-          <option value="draft">Draft</option>
-          <option value="issued">Issued</option>
-          <option value="void">Void</option>
-        </select>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <select
+              value={status}
+              onChange={(e) => { setStatus(e.target.value); applyFilters({ status: e.target.value }) }}
+              className="pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            >
+              <option value="">All Statuses</option>
+              <option value="draft">Draft</option>
+              <option value="issued">Issued</option>
+              <option value="void">Void</option>
+            </select>
+          </div>
 
-        <select
-          value={payment}
-          onChange={(e) => { setPayment(e.target.value); applyFilters({ payment: e.target.value }) }}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none"
-        >
-          <option value="">All Payments</option>
-          <option value="unpaid">Unpaid</option>
-          <option value="partially_paid">Partially Paid</option>
-          <option value="paid">Paid</option>
-        </select>
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <select
+              value={payment}
+              onChange={(e) => { setPayment(e.target.value); applyFilters({ payment: e.target.value }) }}
+              className="pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            >
+              <option value="">All Payments</option>
+              <option value="unpaid">Unpaid</option>
+              <option value="partially_paid">Partially Paid</option>
+              <option value="paid">Paid</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {invoices.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">
-            <p className="text-base">No invoices found.</p>
-            <p className="text-sm mt-1">Create your first invoice to get started.</p>
+          <div className="p-16 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 mb-4">
+              <ReceiptText className="w-6 h-6 text-slate-400" />
+            </div>
+            <p className="text-base font-medium text-slate-900">No invoices found</p>
+            <p className="text-sm text-slate-500 mt-1">Get started by creating a new invoice.</p>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50">
-              {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id}>
-                  {hg.headers.map((header) => (
-                    <th key={header.id} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 text-gray-700">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                {table.getHeaderGroups().map((hg) => (
+                  <tr key={hg.id}>
+                    {hg.headers.map((header) => (
+                      <th key={header.id} className="px-5 py-4 font-semibold text-slate-600 text-xs tracking-wider uppercase">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className="hover:bg-slate-50/80 transition-colors group">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-5 py-4 text-slate-700 whitespace-nowrap">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4 text-sm text-gray-600">
+        <div className="flex items-center justify-between text-sm text-slate-500 pt-2">
           <span>
-            Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} of {total}
+            Showing <span className="font-medium text-slate-900">{(page - 1) * pageSize + 1}</span> to <span className="font-medium text-slate-900">{Math.min(page * pageSize, total)}</span> of <span className="font-medium text-slate-900">{total}</span> results
           </span>
           <div className="flex gap-2">
             <button
               disabled={page <= 1}
               onClick={() => applyFilters({ page: page - 1 })}
-              className="px-3 py-1 border border-gray-300 rounded disabled:opacity-40 hover:bg-gray-50"
+              className="px-4 py-2 bg-white border border-slate-200 font-medium rounded-lg disabled:opacity-50 hover:bg-slate-50 shadow-sm transition-colors"
             >
               Previous
             </button>
             <button
               disabled={page >= totalPages}
               onClick={() => applyFilters({ page: page + 1 })}
-              className="px-3 py-1 border border-gray-300 rounded disabled:opacity-40 hover:bg-gray-50"
+              className="px-4 py-2 bg-white border border-slate-200 font-medium rounded-lg disabled:opacity-50 hover:bg-slate-50 shadow-sm transition-colors"
             >
               Next
             </button>
@@ -295,17 +322,22 @@ export function InvoicesClient({
 
       {/* Delete confirmation dialog */}
       {invoiceToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Delete Invoice</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Are you sure you want to delete this invoice permanently? This action cannot be undone.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md border border-slate-100">
+            <div className="flex items-center gap-3 mb-4 text-red-600">
+              <div className="p-2 bg-red-50 rounded-full">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg font-semibold text-slate-900">Delete Invoice</h2>
+            </div>
+            <p className="text-sm text-slate-600 mb-6">
+              Are you sure you want to delete this invoice permanently? This action cannot be undone and will remove it from all records.
             </p>
-            {deleteError && <p className="text-sm text-red-600 mb-3">{deleteError}</p>}
+            {deleteError && <p className="text-sm text-red-600 mb-4 bg-red-50 p-3 rounded-md">{deleteError}</p>}
             <div className="flex justify-end gap-3">
               <button 
                 onClick={() => { setInvoiceToDelete(null); setDeleteError(null) }} 
-                className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
                 disabled={deleting}
               >
                 Cancel
@@ -313,14 +345,14 @@ export function InvoicesClient({
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-60"
+                className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-60 transition-colors shadow-sm"
               >
-                {deleting ? 'Deleting…' : 'Delete'}
+                {deleting ? 'Deleting…' : 'Yes, Delete'}
               </button>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
