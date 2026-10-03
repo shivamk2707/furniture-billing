@@ -8,7 +8,7 @@ import { productSchema, type ProductFormValues } from '@/lib/validations/product
 import { FormField } from '@/components/ui/form-field'
 
 const COMMON_UNITS = ['Pcs', 'Box', 'Set', 'Pair', 'Dozen', 'Kg', 'Meter', 'Sq.Ft', 'Litre']
-const TAX_RATES = [0, 5, 12, 18, 28]
+const TAX_RATES = [0, 5, 9, 12, 18, 28]
 
 interface Props {
   product: Product | null  // null = create mode

@@ -115,8 +115,8 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto bg-slate-50 p-6 md:p-8">
-        <div className="mx-auto max-w-7xl">
+      <main className="flex-1 overflow-auto bg-slate-50">
+        <div className="mx-auto w-full">
           {children}
         </div>
       </main>

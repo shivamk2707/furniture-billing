@@ -5,7 +5,7 @@ import { useState, useCallback } from 'react'
 import { getProducts, type Product } from '@/actions/products'
 import type { DraftInvoiceFormValues } from '@/lib/validations/invoice'
 
-const TAX_RATES = [0, 5, 12, 18, 28]
+const TAX_RATES = [0, 5, 9, 12, 18, 28]
 
 export function LineItemTable() {
   const { register, control, setValue, watch } = useFormContext<DraftInvoiceFormValues>()
@@ -27,7 +27,7 @@ export function LineItemTable() {
 
   return (
     <div>
-      <div className="overflow-x-auto rounded border border-gray-200">
+      <div className="rounded border border-gray-200">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
             <tr>

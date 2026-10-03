@@ -333,40 +333,17 @@ function TotalsSection({ data }: { data: InvoiceData }) {
 function FooterSection({ data }: { data: InvoiceData }) {
   return (
     <div style={{ display: 'flex', borderBottom: BORDER, minHeight: '100px' }}>
-      {/* Panel 1: Terms */}
-      <div style={{ width: '30%', borderRight: BORDER, padding: '5px 6px' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '8px', marginBottom: '4px' }}>Terms & Conditions</div>
-        <div style={{ fontSize: '7.5px', color: '#374151', whiteSpace: 'pre-wrap' }}>
-          {data.terms_conditions ?? 'Payment due within 15 days of invoice date.'}
-        </div>
-      </div>
       {/* Panel 2: Bank details */}
-      <div style={{ width: '30%', borderRight: BORDER, padding: '5px 6px' }}>
+      <div style={{ width: '50%', borderRight: BORDER, padding: '5px 6px' }}>
         <div style={{ fontWeight: 'bold', fontSize: '8px', marginBottom: '4px' }}>Bank Details</div>
         {data.bank_account_holder && <div style={{ fontSize: '8px' }}><b>A/C Name:</b> {data.bank_account_holder}</div>}
         {data.bank_account_number && <div style={{ fontSize: '8px' }}><b>A/C No:</b> {data.bank_account_number}</div>}
         {data.bank_name && <div style={{ fontSize: '8px' }}><b>Bank:</b> {data.bank_name}</div>}
         {data.bank_ifsc && <div style={{ fontSize: '8px' }}><b>IFSC:</b> {data.bank_ifsc}</div>}
         {data.bank_branch && <div style={{ fontSize: '8px' }}><b>Branch:</b> {data.bank_branch}</div>}
-        {data.bank_qr_data && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={data.bank_qr_data} alt="Bank QR" style={{ width: '60px', height: '60px', marginTop: '4px' }} />
-        )}
-      </div>
-      {/* Panel 3: E-invoice QR */}
-      <div style={{ width: '20%', borderRight: BORDER, padding: '5px 6px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '8px', marginBottom: '4px' }}>E-Invoice QR</div>
-        {data.einvoice_qr_data ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={data.einvoice_qr_data} alt="E-Invoice QR" style={{ width: '65px', height: '65px' }} />
-        ) : (
-          <div style={{ width: '65px', height: '65px', backgroundColor: '#f3f4f6', border: '1px dashed #d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: '7px', color: '#9ca3af', textAlign: 'center' }}>Available after e-invoice generation</span>
-          </div>
-        )}
       </div>
       {/* Panel 4: Authorised signatory */}
-      <div style={{ width: '20%', padding: '5px 6px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ width: '50%', padding: '5px 6px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontWeight: 'bold', fontSize: '8px', alignSelf: 'flex-start' }}>For {data.seller_name ?? 'Company'}</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {data.signature_url ? (
