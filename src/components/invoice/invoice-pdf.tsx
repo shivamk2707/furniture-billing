@@ -264,15 +264,10 @@ export function InvoicePdf({ data }: Props) {
             )}
 
             {/* Section 9: Footer panels (last page only) */}
-            {pageData.terms_conditions !== null && (
+            {pageData.grand_total > 0 && (
               <View style={{ flexDirection: 'row', borderBottom: `1pt solid ${BORDER_COLOR}`, minHeight: 80 }}>
-                {/* Terms */}
-                <View style={{ width: '30%', borderRight: `1pt solid ${BORDER_COLOR}`, padding: '4pt 5pt' }}>
-                  <Text style={{ ...s.bold, fontSize: 7, marginBottom: 3 }}>Terms & Conditions</Text>
-                  <Text style={{ fontSize: 7, color: '#374151' }}>{pageData.terms_conditions ?? 'Payment due within 15 days.'}</Text>
-                </View>
                 {/* Bank details */}
-                <View style={{ width: '30%', borderRight: `1pt solid ${BORDER_COLOR}`, padding: '4pt 5pt' }}>
+                <View style={{ width: '45%', borderRight: `1pt solid ${BORDER_COLOR}`, padding: '4pt 5pt' }}>
                   <Text style={{ ...s.bold, fontSize: 7, marginBottom: 3 }}>Bank Details</Text>
                   {pageData.bank_account_holder && <Text>A/C Name: {pageData.bank_account_holder}</Text>}
                   {pageData.bank_account_number && <Text>A/C No: {pageData.bank_account_number}</Text>}
@@ -281,14 +276,14 @@ export function InvoicePdf({ data }: Props) {
                   {pageData.bank_qr_data && <Image src={pageData.bank_qr_data} style={{ width: 50, height: 50, marginTop: 3 }} />}
                 </View>
                 {/* E-invoice QR */}
-                <View style={{ width: '20%', borderRight: `1pt solid ${BORDER_COLOR}`, padding: '4pt 5pt', alignItems: 'center' }}>
+                <View style={{ width: '25%', borderRight: `1pt solid ${BORDER_COLOR}`, padding: '4pt 5pt', alignItems: 'center' }}>
                   <Text style={{ ...s.bold, fontSize: 7, marginBottom: 3 }}>E-Invoice QR</Text>
                   {pageData.einvoice_qr_data
                     ? <Image src={pageData.einvoice_qr_data} style={{ width: 55, height: 55 }} />
                     : <View style={{ width: 55, height: 55, backgroundColor: '#f3f4f6', border: `1pt dashed ${BORDER_COLOR}` }} />}
                 </View>
                 {/* Signature */}
-                <View style={{ width: '20%', padding: '4pt 5pt', justifyContent: 'space-between' }}>
+                <View style={{ width: '30%', padding: '4pt 5pt', justifyContent: 'space-between' }}>
                   <Text style={s.bold}>For {pageData.seller_name ?? 'Company'}</Text>
                   <View style={{ alignItems: 'center' }}>
                     {pageData.signature_url

@@ -112,7 +112,7 @@ describe('Invoice PDF data building (Requirements 9.1, 9.2, 9.7)', () => {
     }
     const data = await buildInvoiceData(dbInvoice, [dbItem], settings)
 
-    expect(data.terms_conditions).toBe('1. Payment due in 15 days.')
+    expect(data.terms_conditions).toBeNull()
     expect(data.bank_account_number).toBe('1234567890')
     expect(data.bank_name).toBe('SBI')
     expect(data.bank_qr_data).toBeNull() // no UPI configured

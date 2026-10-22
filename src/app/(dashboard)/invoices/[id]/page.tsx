@@ -34,7 +34,7 @@ export default async function InvoiceDetailPage({
 
   const { data: settings } = await supabase
     .from('company_settings')
-    .select('legal_name, logo_url, signature_url, terms_conditions, footer_text, bank_account_holder, bank_account_number, bank_name, bank_ifsc, bank_branch, upi_id')
+    .select('legal_name, logo_url, signature_url, footer_text, bank_account_holder, bank_account_number, bank_name, bank_ifsc, bank_branch, upi_id')
     .eq('company_id', invoice.company_id)
     .single()
 

@@ -76,7 +76,7 @@ export interface DbCompanySettings {
   legal_name: string | null
   logo_url: string | null
   signature_url: string | null
-  terms_conditions: string | null
+  terms_conditions?: string | null
   footer_text: string | null
   bank_account_holder: string | null
   bank_account_number: string | null
@@ -185,7 +185,7 @@ export async function buildInvoiceData(
     amount_in_words: invoice.amount_in_words ?? '',
     amount_paid: Number(invoice.amount_paid),
     balance_due: Number(invoice.balance_due),
-    terms_conditions: settings?.terms_conditions ?? null,
+    terms_conditions: null,
     footer_text: settings?.footer_text ?? null,
     bank_account_holder: settings?.bank_account_holder ?? null,
     bank_account_number: settings?.bank_account_number ?? null,

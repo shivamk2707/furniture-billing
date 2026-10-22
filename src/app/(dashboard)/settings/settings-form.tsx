@@ -8,7 +8,7 @@ import {
   companySettingsSchema,
   type CompanySettingsFormValues,
 } from '@/lib/validations/settings'
-import { FormField, TextareaField } from '@/components/ui/form-field'
+import { FormField } from '@/components/ui/form-field'
 import type { CompanySettings } from '@/lib/types'
 import { LogoUpload } from './logo-upload'
 
@@ -196,12 +196,6 @@ export function SettingsForm({ initialValues }: Props) {
             error={errors.due_date_offset_days?.message}
             min={0}
             max={365}
-          />
-          <TextareaField
-            label="Terms & Conditions"
-            {...register('terms_conditions')}
-            rows={5}
-            placeholder="1. Payment due within 15 days&#10;2. Goods once sold will not be taken back"
           />
           <FormField
             label="Invoice Footer Text"
