@@ -58,7 +58,7 @@ export function InvoicesClient({
   const [search, setSearch] = useState(searchQuery)
   const [status, setStatus] = useState(statusFilter)
   const [payment, setPayment] = useState(paymentFilter)
-  
+
   // Deletion state
   const [invoiceToDelete, setInvoiceToDelete] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -120,8 +120,8 @@ export function InvoicesClient({
       header: '',
       cell: ({ row }) => (
         <div className="flex gap-2 justify-end items-center">
-          <Link 
-            href={`/invoices/${row.original.id}`} 
+          <Link
+            href={`/invoices/${row.original.id}`}
             className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
             title="View Invoice"
           >
@@ -188,7 +188,7 @@ export function InvoicesClient({
   }
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Invoices</h1>
@@ -335,8 +335,8 @@ export function InvoicesClient({
             </p>
             {deleteError && <p className="text-sm text-red-600 mb-4 bg-red-50 p-3 rounded-md">{deleteError}</p>}
             <div className="flex justify-end gap-3">
-              <button 
-                onClick={() => { setInvoiceToDelete(null); setDeleteError(null) }} 
+              <button
+                onClick={() => { setInvoiceToDelete(null); setDeleteError(null) }}
                 className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
                 disabled={deleting}
               >

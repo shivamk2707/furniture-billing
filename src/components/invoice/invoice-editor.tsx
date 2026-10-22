@@ -133,7 +133,7 @@ export function InvoiceEditor({ invoiceId, initialData, initialItems, companySet
             description: li.description,
             hsn_sac: li.hsn_sac ?? null,
             quantity: Number(li.quantity) || 0,
-            unit: li.unit ?? 'Pcs',
+            unit: li.unit ?? null,
             unit_price: Number(li.unit_price) || 0,
             discount_type: li.discount_type,
             discount_value: Number(li.discount_value) || 0,

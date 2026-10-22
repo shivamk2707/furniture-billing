@@ -78,7 +78,7 @@ export function CustomerSelector({ onSelect, selectedName }: Props) {
           {loading ? (
             <div className="p-3 text-sm text-gray-500">Searching…</div>
           ) : results.length === 0 ? (
-            <div className="p-3 text-sm text-gray-500">No customers found. Click "+ New" to add one.</div>
+            <div className="p-3 text-sm text-gray-500">No customers found. Click &quot;+ New&quot; to add one.</div>
           ) : (
             results.map((c) => (
               <button

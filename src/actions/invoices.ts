@@ -201,7 +201,7 @@ export async function saveDraftInvoice(
         description: li.description,
         hsn_sac: li.hsn_sac ?? null,
         quantity: li.quantity,
-        unit: li.unit ?? 'Pcs',
+        unit: li.unit ?? null,
         unit_price: li.unit_price,
         discount_type: li.discount_type,
         discount_value: li.discount_value,

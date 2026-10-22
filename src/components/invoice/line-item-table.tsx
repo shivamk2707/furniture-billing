@@ -16,7 +16,7 @@ export function LineItemTable() {
       description: '',
       hsn_sac: '',
       quantity: 1,
-      unit: 'Pcs',
+      unit: null,
       unit_price: 0,
       discount_type: 'amount',
       discount_value: 0,
@@ -35,9 +35,7 @@ export function LineItemTable() {
               <th className="px-2 py-2 text-left">Description</th>
               <th className="px-2 py-2 text-left w-24">HSN/SAC</th>
               <th className="px-2 py-2 text-right w-16">Qty</th>
-              <th className="px-2 py-2 text-left w-16">Unit</th>
               <th className="px-2 py-2 text-right w-24">Price (₹)</th>
-              <th className="px-2 py-2 text-right w-20">Discount</th>
               <th className="px-2 py-2 text-center w-20">Tax %</th>
               <th className="px-2 py-2 w-8"></th>
             </tr>
@@ -45,8 +43,8 @@ export function LineItemTable() {
           <tbody>
             {fields.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-3 py-6 text-center text-gray-400 text-sm">
-                  No items added yet. Click "Add Item" to get started.
+                <td colSpan={7} className="px-3 py-6 text-center text-gray-400 text-sm">
+                  No items added yet. Click &quot;Add Item&quot; to get started.
                 </td>
               </tr>
             )}
@@ -83,11 +81,9 @@ interface RowProps {
   watch: ReturnType<typeof useFormContext<DraftInvoiceFormValues>>['watch']
 }
 
-function LineItemRow({ index, onRemove, register, setValue, watch }: RowProps) {
+function LineItemRow({ index, onRemove, register, setValue }: RowProps) {
   const [productResults, setProductResults] = useState<Product[]>([])
   const [searchOpen, setSearchOpen] = useState(false)
-
-  const discountType = watch(`line_items.${index}.discount_type`)
 
   const searchProducts = useCallback(async (q: string) => {
     if (!q.trim()) { setProductResults([]); return }
@@ -99,7 +95,7 @@ function LineItemRow({ index, onRemove, register, setValue, watch }: RowProps) {
   const selectProduct = (product: Product) => {
     setValue(`line_items.${index}.description`, product.name)
     setValue(`line_items.${index}.hsn_sac`, product.hsn_sac ?? '')
-    setValue(`line_items.${index}.unit`, product.unit)
+    setValue(`line_items.${index}.unit`, null)
     setValue(`line_items.${index}.unit_price`, product.selling_price)
     setValue(`line_items.${index}.tax_rate`, product.tax_rate)
     setValue(`line_items.${index}.product_id`, product.id)
@@ -161,41 +157,12 @@ function LineItemRow({ index, onRemove, register, setValue, watch }: RowProps) {
 
       <td className="px-2 py-1.5">
         <input
-          {...register(`line_items.${index}.unit`)}
-          placeholder="Pcs"
-          className="w-full px-2 py-1 border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-400"
-        />
-      </td>
-
-      <td className="px-2 py-1.5">
-        <input
           {...register(`line_items.${index}.unit_price`)}
           type="number"
           step="0.01"
           min="0"
           className="w-full px-2 py-1 border border-gray-200 rounded text-sm text-right focus:outline-none focus:border-blue-400"
         />
-      </td>
-
-      {/* Discount: type toggle + value */}
-      <td className="px-2 py-1.5">
-        <div className="flex gap-1">
-          <select
-            {...register(`line_items.${index}.discount_type`)}
-            className="w-12 px-1 py-1 border border-gray-200 rounded text-xs focus:outline-none"
-          >
-            <option value="amount">₹</option>
-            <option value="percent">%</option>
-          </select>
-          <input
-            {...register(`line_items.${index}.discount_value`)}
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder={discountType === 'percent' ? '0' : '0.00'}
-            className="w-16 px-2 py-1 border border-gray-200 rounded text-sm text-right focus:outline-none focus:border-blue-400"
-          />
-        </div>
       </td>
 
       <td className="px-2 py-1.5">

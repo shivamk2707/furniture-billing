@@ -29,7 +29,7 @@ export function paginateInvoice(data: InvoiceData): InvoiceData[] {
 
   // Split items into pages
   const pages: InvoiceLineItem[][] = []
-  let remaining = [...allItems]
+  const remaining = [...allItems]
 
   // First page
   pages.push(remaining.splice(0, ITEMS_PER_FIRST_PAGE))

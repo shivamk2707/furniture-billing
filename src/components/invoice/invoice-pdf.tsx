@@ -85,7 +85,7 @@ const s = StyleSheet.create({
 })
 
 // Column widths in % (must sum to 100)
-const COL = { sr: 4, desc: 27, hsn: 11, qty: 6, unit: 7, price: 12, disc: 9, tax: 8, amt: 16 }
+const COL = { sr: 4, desc: 36, hsn: 12, qty: 8, price: 14, tax: 10, amt: 16 }
 
 function cell(pct: number, align: 'left' | 'right' | 'center' = 'left', extra?: object) {
   return {
@@ -198,9 +198,7 @@ export function InvoicePdf({ data }: Props) {
               <Text style={cell(COL.desc)}>Item Description</Text>
               <Text style={cell(COL.hsn, 'center')}>HSN/SAC</Text>
               <Text style={cell(COL.qty, 'right')}>Qty</Text>
-              <Text style={cell(COL.unit, 'center')}>Unit</Text>
               <Text style={cell(COL.price, 'right')}>List Price</Text>
-              <Text style={cell(COL.disc, 'right')}>Disc.</Text>
               <Text style={cell(COL.tax, 'center')}>Tax %</Text>
               <Text style={{ ...cell(COL.amt, 'right'), borderRight: undefined }}>Amount (₹)</Text>
             </View>
@@ -220,12 +218,6 @@ export function InvoicePdf({ data }: Props) {
             {/* Section 7: Totals (last page only) */}
             {pageData.grand_total > 0 && (
               <View style={{ borderBottom: `1pt solid ${BORDER_COLOR}` }}>
-                {pageData.total_discount > 0 && (
-                  <View style={s.totalRow}>
-                    <Text>Discount</Text>
-                    <Text>- {formatINR(pageData.total_discount)}</Text>
-                  </View>
-                )}
                 <View style={s.totalRow}>
                   <Text>Subtotal (Taxable Value)</Text>
                   <Text>{formatINR(pageData.subtotal)}</Text>
@@ -353,15 +345,7 @@ function PdfProductRow({
       <Text style={cell(COL.desc)}>{item.description}</Text>
       <Text style={cell(COL.hsn, 'center')}>{item.hsn_sac ?? '—'}</Text>
       <Text style={cell(COL.qty, 'right')}>{formatNumber(item.quantity, 2)}</Text>
-      <Text style={cell(COL.unit, 'center')}>{item.unit ?? '—'}</Text>
       <Text style={cell(COL.price, 'right')}>{formatNumber(item.unit_price)}</Text>
-      <Text style={cell(COL.disc, 'right')}>
-        {item.discount_amount > 0
-          ? item.discount_type === 'percent'
-            ? `${item.discount_value}%`
-            : formatNumber(item.discount_amount)
-          : '—'}
-      </Text>
       <Text style={cell(COL.tax, 'center')}>{taxLabel}</Text>
       <Text style={{ ...cell(COL.amt, 'right'), borderRight: undefined }}>
         {formatNumber(item.line_total)}

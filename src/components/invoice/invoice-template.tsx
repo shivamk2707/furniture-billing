@@ -83,7 +83,7 @@ const styles = {
 }
 
 // Column widths (must sum to 100)
-const COL = { sr: 4, desc: 27, hsn: 11, qty: 6, unit: 7, price: 12, disc: 9, tax: 8, amt: 16 }
+const COL = { sr: 4, desc: 36, hsn: 12, qty: 8, price: 14, tax: 10, amt: 16 }
 
 interface Props {
   data: InvoiceData
@@ -199,9 +199,7 @@ export function InvoiceTemplate({ data }: Props) {
         <div style={styles.tableCell(COL.desc)}>Item Description</div>
         <div style={styles.tableCell(COL.hsn, 'center')}>HSN/SAC</div>
         <div style={styles.tableCell(COL.qty, 'right')}>Qty</div>
-        <div style={styles.tableCell(COL.unit, 'center')}>Unit</div>
         <div style={styles.tableCell(COL.price, 'right')}>List Price</div>
-        <div style={styles.tableCell(COL.disc, 'right')}>Disc.</div>
         <div style={styles.tableCell(COL.tax, 'center')}>Tax %</div>
         <div style={{ ...styles.tableCell(COL.amt, 'right'), borderRight: 'none' }}>Amount (₹)</div>
       </div>
@@ -264,15 +262,7 @@ function ProductRow({ item, index, isInterState }: { item: InvoiceLineItem; inde
       <div style={styles.tableCell(COL.desc)}>{item.description}</div>
       <div style={styles.tableCell(COL.hsn, 'center')}>{item.hsn_sac ?? '—'}</div>
       <div style={styles.tableCell(COL.qty, 'right')}>{formatNumber(item.quantity, 2)}</div>
-      <div style={styles.tableCell(COL.unit, 'center')}>{item.unit ?? '—'}</div>
       <div style={styles.tableCell(COL.price, 'right')}>{formatNumber(item.unit_price)}</div>
-      <div style={styles.tableCell(COL.disc, 'right')}>
-        {item.discount_amount > 0
-          ? item.discount_type === 'percent'
-            ? `${item.discount_value}%`
-            : formatNumber(item.discount_amount)
-          : '—'}
-      </div>
       <div style={styles.tableCell(COL.tax, 'center')}>{taxLabel}</div>
       <div style={{ ...styles.tableCell(COL.amt, 'right'), borderRight: 'none' }}>
         {formatNumber(item.line_total)}
@@ -284,13 +274,6 @@ function ProductRow({ item, index, isInterState }: { item: InvoiceLineItem; inde
 function TotalsSection({ data }: { data: InvoiceData }) {
   return (
     <div style={{ borderBottom: BORDER }}>
-      {/* Discount */}
-      {data.total_discount > 0 && (
-        <div style={{ ...styles.totalRow, color: '#374151' }}>
-          <span>Discount</span>
-          <span>- {formatINR(data.total_discount)}</span>
-        </div>
-      )}
       {/* Subtotal */}
       <div style={styles.totalRow}>
         <span>Subtotal (Taxable Value)</span>
